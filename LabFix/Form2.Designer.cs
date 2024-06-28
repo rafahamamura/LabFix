@@ -109,11 +109,12 @@
             // 
             // txtBoxHostname
             // 
-            txtBoxHostname.Enabled = false;
             txtBoxHostname.Location = new Point(98, 161);
             txtBoxHostname.Name = "txtBoxHostname";
+            txtBoxHostname.ReadOnly = true;
             txtBoxHostname.Size = new Size(240, 27);
             txtBoxHostname.TabIndex = 7;
+            txtBoxHostname.TextAlign = HorizontalAlignment.Right;
             // 
             // label4
             // 
@@ -162,27 +163,30 @@
             // 
             // txtBoxIP
             // 
-            txtBoxIP.Enabled = false;
             txtBoxIP.Location = new Point(112, 207);
             txtBoxIP.Name = "txtBoxIP";
+            txtBoxIP.ReadOnly = true;
             txtBoxIP.Size = new Size(226, 27);
             txtBoxIP.TabIndex = 13;
+            txtBoxIP.TextAlign = HorizontalAlignment.Right;
             // 
             // txtBoxMask
             // 
-            txtBoxMask.Enabled = false;
             txtBoxMask.Location = new Point(85, 248);
             txtBoxMask.Name = "txtBoxMask";
+            txtBoxMask.ReadOnly = true;
             txtBoxMask.Size = new Size(253, 27);
             txtBoxMask.TabIndex = 14;
+            txtBoxMask.TextAlign = HorizontalAlignment.Right;
             // 
             // txtBoxGw
             // 
-            txtBoxGw.Enabled = false;
             txtBoxGw.Location = new Point(112, 290);
             txtBoxGw.Name = "txtBoxGw";
+            txtBoxGw.ReadOnly = true;
             txtBoxGw.Size = new Size(226, 27);
             txtBoxGw.TabIndex = 15;
+            txtBoxGw.TextAlign = HorizontalAlignment.Right;
             // 
             // button1
             // 
@@ -192,6 +196,7 @@
             button1.TabIndex = 16;
             button1.Text = "Aplicar";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // frm_configIP
             // 

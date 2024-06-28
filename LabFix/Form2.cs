@@ -30,6 +30,8 @@ namespace LabFix
         String ip = ".1.10";
         String ipFull = "";
         String gateway = "10.10.0.1";
+        String hostname = "";
+
         public frm_configIP()
         {
             InitializeComponent();
@@ -42,7 +44,10 @@ namespace LabFix
             cbHosts.Items.AddRange(machineList);
             cbHosts.SelectedIndex = 0;
 
-            checkHostname();
+            //checkHostname();
+
+            txtBoxGw.Text = "10.10.0.1";
+            txtBoxMask.Text = "255.255.255.0";
 
             // Load interfaces description into comboBox
             int indexCB = 0; // selected item in comboBox
@@ -91,12 +96,24 @@ namespace LabFix
         private void setIpFull()
         {
             int ipLab = (int)cbLabs.SelectedIndex + 1;
-            int ipMac = (int)cbHosts.SelectedIndex + 10;
+            int ipHost = (int)cbHosts.SelectedIndex + 10;
 
-            ip = "." + ipLab + "." + ipMac;
+            ip = "." + ipLab + "." + ipHost;
             ipFull = network + ip;
-
             txtBoxIP.Text = ipFull;
+
+            setHostname(ipLab, ipHost - 10);
+        }
+
+        private void setHostname(int ipLab, int ipHost)
+        {
+            string hostname = "";
+            if (ipHost.Equals(0))
+                hostname = "LAB" + ipLab.ToString("00") + "-PROFESSOR";
+            else
+                hostname = "LAB" + ipLab.ToString("00") + "-M" + ipHost.ToString("00");
+            this.hostname = hostname;
+            txtBoxHostname.Text = hostname;
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -139,7 +156,9 @@ namespace LabFix
                         adapter.InvokeMethod("EnableStatic", newAddress, null);
                         adapter.InvokeMethod("SetGateways", newGateway, null);
 
-                        txtLog.Text.Insert(0,"Updated to static IP address!");
+                        
+
+                        txtLog.Text.Insert(0, "Updated to static IP address!");
                     }
                     catch (Exception ex)
                     {
@@ -147,6 +166,13 @@ namespace LabFix
                     }
                 }
             }
+            // Set hostname
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            setConfig();
         }
     }
 }
