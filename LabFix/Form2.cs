@@ -32,14 +32,18 @@ namespace LabFix
         private void frm_configIP_Load(object sender, EventArgs e)
         {
             comboBox1.Items.AddRange(labList);
-            comboBox1.SelectedIndex = 0;
             comboBox2.Items.AddRange(machineList);
+            comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
 
             // Load interfaces description into comboBox
             int indexCB = 0; // selected item in comboBox
             int index = 0;
             networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            
+            // log
+            textBox1.Text += "Carregando interfaces..." + Environment.NewLine + Environment.NewLine;
+
             foreach (NetworkInterface networkInterface in networkInterfaces)
             {
                 // Add only Ethernet and IPv4 network interfaces
@@ -48,6 +52,7 @@ namespace LabFix
                 {
                     string desc = networkInterface.Description;
                     comboBox3.Items.Add(desc);
+                    textBox1.Text += desc + Environment.NewLine;
                     if (desc.StartsWith("Realtek") ||
                         desc.StartsWith("Intel") ||
                         desc.StartsWith("Broadcom") ||
@@ -61,6 +66,8 @@ namespace LabFix
 
             }
             comboBox3.SelectedIndex = indexCB;
+            // log
+            textBox1.Text += Environment.NewLine;
 
         }
 
@@ -71,12 +78,34 @@ namespace LabFix
 
         private void setIP()
         {
+            // log
+            textBox1.Text += "Configurando endereços IP e Hostname..." + Environment.NewLine;
+
             int ipLab = (int)comboBox1.SelectedIndex + 1;
             int ipMac = (int)comboBox2.SelectedIndex + 10;
 
             ip = "." + ipLab + "." + ipMac;
 
             txtBoxIP.Text = network + ip;
+
+            // log
+            textBox1.Text += "IP = " + network + ip + Environment.NewLine;
+
+            string lab = "LAB" + ipLab.ToString("00");
+            if (ipMac.Equals(10))
+            {
+                txtBoxHostname.Text = lab + "-PROFESSOR";
+            }
+            else
+            {
+                string host = "M" + (ipMac - 10).ToString("00");
+
+                txtBoxHostname.Text = lab + "-" + host;
+            }
+            //log
+            textBox1.Text += "Hostname = " + txtBoxHostname.Text + Environment.NewLine;
+            textBox1.Text += Environment.NewLine;
+            
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)

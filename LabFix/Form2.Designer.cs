@@ -173,6 +173,7 @@
             txtBoxMask.Name = "txtBoxMask";
             txtBoxMask.Size = new Size(253, 27);
             txtBoxMask.TabIndex = 14;
+            txtBoxMask.Text = "255.255.255.0";
             // 
             // txtBoxGw
             // 
@@ -180,6 +181,7 @@
             txtBoxGw.Name = "txtBoxGw";
             txtBoxGw.Size = new Size(226, 27);
             txtBoxGw.TabIndex = 15;
+            txtBoxGw.Text = "10.10.0.1";
             // 
             // button1
             // 
