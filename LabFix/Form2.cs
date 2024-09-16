@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Management;
+using System.Net;
 
 namespace LabFix
 {
@@ -24,6 +28,10 @@ namespace LabFix
         NetworkInterface selectedNIC;
         String network = "10.10";
         String ip = ".1.10";
+        String ipFull = "";
+        String gateway = "10.10.0.1";
+        String hostname = "";
+
         public frm_configIP()
         {
             InitializeComponent();
@@ -31,10 +39,15 @@ namespace LabFix
 
         private void frm_configIP_Load(object sender, EventArgs e)
         {
-            comboBox1.Items.AddRange(labList);
-            comboBox2.Items.AddRange(machineList);
-            comboBox1.SelectedIndex = 0;
-            comboBox2.SelectedIndex = 0;
+            cbLabs.Items.AddRange(labList);
+            cbLabs.SelectedIndex = 0;
+            cbHosts.Items.AddRange(machineList);
+            cbHosts.SelectedIndex = 0;
+
+            //checkHostname();
+
+            txtBoxGw.Text = "10.10.0.1";
+            txtBoxMask.Text = "255.255.255.0";
 
             // Load interfaces description into comboBox
             int indexCB = 0; // selected item in comboBox
@@ -51,7 +64,7 @@ namespace LabFix
                     networkInterface.NetworkInterfaceType.Equals(NetworkInterfaceType.Ethernet))
                 {
                     string desc = networkInterface.Description;
-                    comboBox3.Items.Add(desc);
+                    cbInterfaces.Items.Add(desc);
                     textBox1.Text += desc + Environment.NewLine;
                     if (desc.StartsWith("Realtek") ||
                         desc.StartsWith("Intel") ||
@@ -65,27 +78,49 @@ namespace LabFix
                 }
 
             }
-            comboBox3.SelectedIndex = indexCB;
+            cbInterfaces.SelectedIndex = indexCB;
             // log
             textBox1.Text += Environment.NewLine;
 
+        private void checkHostname()
+        {
+            IPGlobalProperties prop = IPGlobalProperties.GetIPGlobalProperties();
+            if (prop.HostName.Contains("LAB"))
+            {
+                string[] hostname = prop.HostName.Split('-');
+                cbLabs.SelectedText = hostname[0];
+                cbHosts.SelectedText = hostname[1];
+            }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            setIP();
+            setIpFull();
         }
 
-        private void setIP()
+        private void setIpFull()
         {
+            int ipLab = (int)cbLabs.SelectedIndex + 1;
+            int ipHost = (int)cbHosts.SelectedIndex + 10;
             // log
             textBox1.Text += "Configurando endereços IP e Hostname..." + Environment.NewLine;
 
-            int ipLab = (int)comboBox1.SelectedIndex + 1;
-            int ipMac = (int)comboBox2.SelectedIndex + 10;
+            ip = "." + ipLab + "." + ipHost;
+            ipFull = network + ip;
+            txtBoxIP.Text = ipFull;
 
-            ip = "." + ipLab + "." + ipMac;
+            setHostname(ipLab, ipHost - 10);
+        }
 
+        private void setHostname(int ipLab, int ipHost)
+        {
+            string hostname = "";
+            if (ipHost.Equals(0))
+                hostname = "LAB" + ipLab.ToString("00") + "-PROFESSOR";
+            else
+                hostname = "LAB" + ipLab.ToString("00") + "-M" + ipHost.ToString("00");
+            this.hostname = hostname;
+            txtBoxHostname.Text = hostname;
             txtBoxIP.Text = network + ip;
 
             // log
@@ -110,18 +145,61 @@ namespace LabFix
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            setIP();
+            setIpFull();
         }
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             foreach (NetworkInterface networkInterface in networkInterfaces)
             {
-                if (networkInterface.Description.Equals(comboBox3.SelectedText))
+                if (networkInterface.Description.Equals(cbInterfaces.SelectedText))
                 {
                     selectedNIC = networkInterface;
                 }
             }
+        }
+
+        private void setConfig()
+        {
+            var adapterConfig = new ManagementClass("Win32_NetworkAdapterConfiguration");
+            var networkCollection = adapterConfig.GetInstances();
+            foreach (ManagementObject adapter in networkCollection)
+            {
+                string description = adapter["Description"] as string;
+                if (String.Compare(description, selectedNIC.Description) == 0)
+                {
+                    try
+                    {
+                        // Set DefaultGateway
+                        var newGateway = adapter.GetMethodParameters("SetGateways");
+                        newGateway["DefaultIPGateway"] = new string[] { gateway };
+                        newGateway["GatewayCostMetric"] = new int[] { 1 };
+
+                        // Set IPAddress and Subnet Mask
+                        var newAddress = adapter.GetMethodParameters("EnableStatic");
+                        newAddress["IPAddress"] = new string[] { ipFull };
+                        newAddress["SubnetMask"] = new string[] { "255.255.255.0" };
+
+                        adapter.InvokeMethod("EnableStatic", newAddress, null);
+                        adapter.InvokeMethod("SetGateways", newGateway, null);
+
+                        
+
+                        txtLog.Text.Insert(0, "Updated to static IP address!");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, "Unable to Set IP : " + ex.Message);
+                    }
+                }
+            }
+            // Set hostname
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            setConfig();
         }
     }
 }

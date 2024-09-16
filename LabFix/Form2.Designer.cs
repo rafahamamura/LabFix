@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             label1 = new Label();
-            comboBox1 = new ComboBox();
+            cbLabs = new ComboBox();
             label2 = new Label();
-            comboBox2 = new ComboBox();
-            textBox1 = new TextBox();
+            cbHosts = new ComboBox();
+            txtLog = new TextBox();
             progressBar1 = new ProgressBar();
             label3 = new Label();
             txtBoxHostname = new TextBox();
@@ -40,7 +40,7 @@
             label5 = new Label();
             label6 = new Label();
             label7 = new Label();
-            comboBox3 = new ComboBox();
+            cbInterfaces = new ComboBox();
             txtBoxIP = new TextBox();
             txtBoxMask = new TextBox();
             txtBoxGw = new TextBox();
@@ -56,14 +56,14 @@
             label1.TabIndex = 0;
             label1.Text = "LABORATÓRIO";
             // 
-            // comboBox1
+            // cbLabs
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(12, 32);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(160, 28);
-            comboBox1.TabIndex = 1;
-            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            cbLabs.FormattingEnabled = true;
+            cbLabs.Location = new Point(12, 32);
+            cbLabs.Name = "cbLabs";
+            cbLabs.Size = new Size(160, 28);
+            cbLabs.TabIndex = 1;
+            cbLabs.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // label2
             // 
@@ -74,22 +74,22 @@
             label2.TabIndex = 2;
             label2.Text = "MÁQUINA";
             // 
-            // comboBox2
+            // cbHosts
             // 
-            comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(178, 32);
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(160, 28);
-            comboBox2.TabIndex = 3;
-            comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
+            cbHosts.FormattingEnabled = true;
+            cbHosts.Location = new Point(178, 32);
+            cbHosts.Name = "cbHosts";
+            cbHosts.Size = new Size(160, 28);
+            cbHosts.TabIndex = 3;
+            cbHosts.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
             // 
-            // textBox1
+            // txtLog
             // 
-            textBox1.Location = new Point(344, 12);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(400, 401);
-            textBox1.TabIndex = 4;
+            txtLog.Location = new Point(356, 12);
+            txtLog.Multiline = true;
+            txtLog.Name = "txtLog";
+            txtLog.Size = new Size(388, 401);
+            txtLog.TabIndex = 4;
             // 
             // progressBar1
             // 
@@ -109,11 +109,12 @@
             // 
             // txtBoxHostname
             // 
-            txtBoxHostname.Enabled = false;
             txtBoxHostname.Location = new Point(98, 161);
             txtBoxHostname.Name = "txtBoxHostname";
+            txtBoxHostname.ReadOnly = true;
             txtBoxHostname.Size = new Size(240, 27);
             txtBoxHostname.TabIndex = 7;
+            txtBoxHostname.TextAlign = HorizontalAlignment.Right;
             // 
             // label4
             // 
@@ -151,46 +152,53 @@
             label7.TabIndex = 11;
             label7.Text = "INTERFACE";
             // 
-            // comboBox3
+            // cbInterfaces
             // 
-            comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(12, 102);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(326, 28);
-            comboBox3.TabIndex = 12;
-            comboBox3.SelectedIndexChanged += comboBox3_SelectedIndexChanged;
+            cbInterfaces.FormattingEnabled = true;
+            cbInterfaces.Location = new Point(12, 102);
+            cbInterfaces.Name = "cbInterfaces";
+            cbInterfaces.Size = new Size(326, 28);
+            cbInterfaces.TabIndex = 12;
+            cbInterfaces.SelectedIndexChanged += comboBox3_SelectedIndexChanged;
             // 
             // txtBoxIP
             // 
             txtBoxIP.Location = new Point(112, 207);
             txtBoxIP.Name = "txtBoxIP";
+            txtBoxIP.ReadOnly = true;
             txtBoxIP.Size = new Size(226, 27);
             txtBoxIP.TabIndex = 13;
+            txtBoxIP.TextAlign = HorizontalAlignment.Right;
             // 
             // txtBoxMask
             // 
             txtBoxMask.Location = new Point(85, 248);
             txtBoxMask.Name = "txtBoxMask";
+            txtBoxMask.ReadOnly = true;
             txtBoxMask.Size = new Size(253, 27);
             txtBoxMask.TabIndex = 14;
+            txtBoxMask.TextAlign = HorizontalAlignment.Right;
             txtBoxMask.Text = "255.255.255.0";
             // 
             // txtBoxGw
             // 
             txtBoxGw.Location = new Point(112, 290);
             txtBoxGw.Name = "txtBoxGw";
+            txtBoxGw.ReadOnly = true;
             txtBoxGw.Size = new Size(226, 27);
             txtBoxGw.TabIndex = 15;
+            txtBoxGw.TextAlign = HorizontalAlignment.Right;
             txtBoxGw.Text = "10.10.0.1";
             // 
             // button1
             // 
-            button1.Location = new Point(12, 384);
+            button1.Location = new Point(12, 339);
             button1.Name = "button1";
-            button1.Size = new Size(326, 29);
+            button1.Size = new Size(326, 74);
             button1.TabIndex = 16;
             button1.Text = "Aplicar";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // frm_configIP
             // 
@@ -201,7 +209,7 @@
             Controls.Add(txtBoxGw);
             Controls.Add(txtBoxMask);
             Controls.Add(txtBoxIP);
-            Controls.Add(comboBox3);
+            Controls.Add(cbInterfaces);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
@@ -209,10 +217,10 @@
             Controls.Add(txtBoxHostname);
             Controls.Add(label3);
             Controls.Add(progressBar1);
-            Controls.Add(textBox1);
-            Controls.Add(comboBox2);
+            Controls.Add(txtLog);
+            Controls.Add(cbHosts);
             Controls.Add(label2);
-            Controls.Add(comboBox1);
+            Controls.Add(cbLabs);
             Controls.Add(label1);
             Name = "frm_configIP";
             Text = "Configuração de IP";
@@ -224,10 +232,10 @@
         #endregion
 
         private Label label1;
-        private ComboBox comboBox1;
+        private ComboBox cbLabs;
         private Label label2;
-        private ComboBox comboBox2;
-        private TextBox textBox1;
+        private ComboBox cbHosts;
+        private TextBox txtLog;
         private ProgressBar progressBar1;
         private Label label3;
         private TextBox txtBoxHostname;
@@ -235,7 +243,7 @@
         private Label label5;
         private Label label6;
         private Label label7;
-        private ComboBox comboBox3;
+        private ComboBox cbInterfaces;
         private TextBox txtBoxIP;
         private TextBox txtBoxMask;
         private TextBox txtBoxGw;
